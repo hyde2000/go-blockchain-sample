@@ -1,3 +1,3 @@
-module github.com/go-blockchain-sample
+module go-blockchain-sample
 
 go 1.17
