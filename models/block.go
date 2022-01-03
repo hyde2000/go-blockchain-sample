@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+const MiningDifficulty = 3
+
 type Block struct {
 	nonce        int
 	previousHash [32]byte
@@ -26,7 +28,7 @@ func NewBlock(nonce int, previousHash [32]byte, transactions []*Transaction) *Bl
 func (b *Block) Print() {
 	fmt.Printf("timestamp: %d \n", b.timestamp)
 	fmt.Printf("nonce %d \n", b.nonce)
-	fmt.Printf("previous_hash %s \n", b.previousHash)
+	fmt.Printf("previous_hash %x \n", b.previousHash)
 	fmt.Printf("transactions %v \n", b.transactions)
 
 	for _, t := range b.transactions {
