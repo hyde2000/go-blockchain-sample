@@ -38,7 +38,7 @@ func (b *Block) Print() {
 
 func (b *Block) Hash() [32]byte {
 	m, _ := json.Marshal(b)
-	return sha256.Sum256([]byte(m))
+	return sha256.Sum256(m)
 }
 
 func (b *Block) MarshallJSON() ([]byte, error) {
