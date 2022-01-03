@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const MiningDifficulty = 3
+
 
 type Block struct {
 	nonce        int

@@ -14,9 +14,9 @@ type Transaction struct {
 
 func NewTransaction(sender string, recipient string, value float32) *Transaction {
 	return &Transaction{
-		sender,
-		recipient,
-		value,
+		senderBlockchainAddress:    sender,
+		recipientBlockchainAddress: recipient,
+		value:                      value,
 	}
 }
 
@@ -24,7 +24,7 @@ func (t *Transaction) Print() {
 	fmt.Printf("%s\n", strings.Repeat("-", 40))
 	fmt.Printf("sender_blockchain_address %s\n", t.senderBlockchainAddress)
 	fmt.Printf("recipient_blockchain_address %s\n", t.recipientBlockchainAddress)
-	fmt.Printf("value %v\n", t.value)
+	fmt.Printf("value %.1f\n", t.value)
 }
 
 func (t *Transaction) MarshallJSON() ([]byte, error) {

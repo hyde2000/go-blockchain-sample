@@ -3,19 +3,15 @@ package main
 import "go-blockchain-sample/models"
 
 func main() {
-	blockchain := models.NewBlockchain()
-	blockchain.Print()
+	myAddress := "my_blockchain_address"
+	blockchain := models.NewBlockchain(myAddress)
 
 	blockchain.AddTransaction("A", "B", 1.0)
-	previousHash := blockchain.LastBlock().Hash()
-	nonce := blockchain.ProofOfWork()
-	blockchain.CreateBlock(nonce, previousHash)
+	blockchain.Mining()
 	blockchain.Print()
 
 	blockchain.AddTransaction("C", "D", 2.0)
 	blockchain.AddTransaction("X", "Y", 3.0)
-	previousHash = blockchain.LastBlock().Hash()
-	nonce = blockchain.ProofOfWork()
-	blockchain.CreateBlock(nonce, previousHash)
+	blockchain.Mining()
 	blockchain.Print()
 }
