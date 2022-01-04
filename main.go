@@ -6,12 +6,19 @@ import (
 )
 
 func main() {
-	w := models.NewWallet()
-	fmt.Println(w.PrivateKeyStr())
-	fmt.Println(w.PublicKeyStr())
-	fmt.Println(w.BlockchainAddress())
+	walletM := models.NewWallet()
+	walletA := models.NewWallet()
+	walletB := models.NewWallet()
 
-	wt := models.NewWalletTransaction(w.PrivateKey(), w.PublicKey(), w.BlockchainAddress(), "B", 1.0)
+	wt := models.NewWalletTransaction(walletA.PrivateKey(), walletA.PublicKey(), walletA.BlockchainAddress(), walletB.BlockchainAddress(), 1.0)
+
+	blockchain := models.NewBlockchain(walletM.BlockchainAddress())
 	signature, _ := wt.GenerateSignature()
-	fmt.Printf("signature %s \n", signature)
+	isAdded := blockchain.AddTransaction(walletA.BlockchainAddress(), walletB.BlockchainAddress(), 1.0, walletA.PublicKey(), signature)
+	fmt.Println(isAdded)
+
+	blockchain.Mining()
+	// blockchain.Print()
+
+	fmt.Printf("A %.1f\n", blockchain.CalculateTotalAmount(walletA.BlockchainAddress()))
 }

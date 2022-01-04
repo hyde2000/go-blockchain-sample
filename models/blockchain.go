@@ -58,6 +58,10 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 	}
 
 	if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
+		if bc.CalculateTotalAmount(sender) < value {
+			log.Println("ERROR: Not enough balance in the wallet")
+			return false
+		}
 		bc.transactionPool = append(bc.transactionPool, t)
 		return true
 	} else {
@@ -84,7 +88,7 @@ func (bc *Blockchain) CopyTransactionPool() []*Transaction {
 
 func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) bool {
 	zeros := strings.Repeat("0", difficulty)
-	guessBlock := Block{nonce: nonce, previousHash: previousHash, transactions: transactions, timestamp: 0}
+	guessBlock := &Block{nonce: nonce, previousHash: previousHash, transactions: transactions, timestamp: 0}
 	guessHashStr := fmt.Sprintf("%x", guessBlock.Hash())
 
 	return guessHashStr[:difficulty] == zeros
@@ -93,12 +97,11 @@ func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions 
 func (bc *Blockchain) ProofOfWork() int {
 	transactions := bc.CopyTransactionPool()
 	previousHash := bc.LastBlock().Hash()
+
 	nonce := 0
-	// Loop until proof of work done
 	for !bc.ValidProof(nonce, previousHash, transactions, MiningDifficulty) {
 		nonce += 1
 	}
-
 	return nonce
 }
 
