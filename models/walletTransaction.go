@@ -5,8 +5,8 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/json"
+	"go-blockchain-sample/utils"
 	"golang.org/x/xerrors"
-	"math/big"
 )
 
 type WalletTransaction struct {
@@ -15,11 +15,6 @@ type WalletTransaction struct {
 	senderBlockchainAddress    string
 	recipientBlockchainAddress string
 	value                      float32
-}
-
-type Signature struct {
-	R *big.Int
-	S *big.Int
 }
 
 func NewWalletTransaction(privateKey *ecdsa.PrivateKey, publicKey *ecdsa.PublicKey, sender string, recipient string, value float32) *WalletTransaction {
@@ -32,16 +27,16 @@ func NewWalletTransaction(privateKey *ecdsa.PrivateKey, publicKey *ecdsa.PublicK
 	}
 }
 
-func (wt *WalletTransaction) GenerateSignature() (*Signature, error) {
+func (wt *WalletTransaction) GenerateSignature() (*utils.Signature, error) {
 	m, _ := json.Marshal(wt)
 	h := sha256.Sum256(m)
 
 	r, s, err := ecdsa.Sign(rand.Reader, wt.senderPrivateKey, h[:])
 	if err != nil {
-		return &Signature{}, xerrors.Errorf("transaction signature sign error %w:", err)
+		return &utils.Signature{}, xerrors.Errorf("transaction signature sign error %w:", err)
 	}
 
-	return &Signature{R: r, S: s}, nil
+	return &utils.Signature{R: r, S: s}, nil
 }
 
 func (wt *WalletTransaction) MarshallJSON() ([]byte, error) {
