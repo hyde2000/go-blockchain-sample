@@ -5,6 +5,7 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"github.com/btcsuite/btcutil/base58"
 	"golang.org/x/crypto/ripemd160"
@@ -75,4 +76,16 @@ func (w *Wallet) PublicKeyStr() string {
 
 func (w *Wallet) BlockchainAddress() string {
 	return w.blockchainAddress
+}
+
+func (w *Wallet) MarshallJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		PrivateKey        string `json:"private_key"`
+		PublicKey         string `json:"public_key"`
+		BlockchainAddress string `json:"blockchain_address"`
+	}{
+		PublicKey:         w.PublicKeyStr(),
+		PrivateKey:        w.PrivateKeyStr(),
+		BlockchainAddress: w.BlockchainAddress(),
+	})
 }
