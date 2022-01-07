@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"go-blockchain-sample/models"
 	"go-blockchain-sample/utils"
 	"html/template"
@@ -54,12 +55,20 @@ func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 }
 
 func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Request) {
+	var t TransactionRequest
+
 	switch req.Method {
 	case http.MethodPost:
-		io.WriteString(w, string(utils.JsonStatus("success")))
+		decoder := json.NewDecoder(req.Body)
+		if err := decoder.Decode(&t); err != nil {
+			log.Println("ERROR: %v", err)
+			io.WriteString(w, string(utils.JsonStatus("success")))
+			return
+		}
 	default:
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println("ERROR: Invalid HTTP Method")
+		return
 	}
 }
 
