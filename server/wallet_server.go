@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"encoding/json"
 	"go-blockchain-sample/models"
 	"go-blockchain-sample/utils"
@@ -79,8 +80,40 @@ func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Reque
 			io.WriteString(w, string(utils.JsonStatus("fail")))
 			return
 		}
-		value32 := float32(value)
+		valueFloat32 := float32(value)
+		// Prepare response
 		w.Header().Add("Content-Type", "application/json")
+		transaction := models.NewWalletTransaction(privateKey, publicKey, *t.SenderBlockchainAddress, *t.RecipientBlockchainAddress, valueFloat32)
+		signature, err := transaction.GenerateSignature()
+		if err != nil {
+			log.Println("ERROR: generate signature error")
+			io.WriteString(w, string(utils.JsonStatus("fail")))
+			return
+		}
+		signatureStr := signature.String()
+
+		bt := &models.TransactionRequest{
+			SenderBlockchainAddress:    t.SenderBlockchainAddress,
+			RecipientBlockchainAddress: t.RecipientBlockchainAddress,
+			SenderPublicKey:            t.SenderPublicKey,
+			Value:                      &valueFloat32,
+			Signature:                  &signatureStr,
+		}
+		m, _ := json.Marshal(bt)
+		buf := bytes.NewBuffer(m)
+		// Do transaction
+		res, err := http.Post(ws.Gateway()+"/transactions", "application/json", buf)
+		if err != nil {
+			log.Println("ERROR: cannot post")
+			io.WriteString(w, string(utils.JsonStatus("fail")))
+			return
+		}
+		if res.StatusCode == 201 {
+			io.WriteString(w, string(utils.JsonStatus("success")))
+			return
+		} else {
+			io.WriteString(w, string(utils.JsonStatus("fail")))
+		}
 	default:
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println("ERROR: Invalid HTTP Method")
