@@ -61,8 +61,13 @@ func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Reque
 	case http.MethodPost:
 		decoder := json.NewDecoder(req.Body)
 		if err := decoder.Decode(&t); err != nil {
-			log.Println("ERROR: %v", err)
-			io.WriteString(w, string(utils.JsonStatus("success")))
+			log.Printf("ERROR: %v\n", err)
+			io.WriteString(w, string(utils.JsonStatus("fail")))
+			return
+		}
+		if !t.Validate() {
+			log.Println("ERROR: missing field(s)")
+			io.WriteString(w, string(utils.JsonStatus("fail")))
 			return
 		}
 	default:
