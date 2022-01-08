@@ -23,11 +23,10 @@ type Blockchain struct {
 
 func NewBlockchain(blockchainAddress string, port uint16) *Blockchain {
 	b := &Block{}
-	bc := &Blockchain{
-		blockchainAddress: blockchainAddress,
-		port:              port,
-	}
+	bc := new(Blockchain)
+	bc.blockchainAddress = blockchainAddress
 	bc.CreateBlock(0, b.Hash())
+	bc.port = port
 
 	return bc
 }
