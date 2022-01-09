@@ -27,7 +27,7 @@ func (t *Transaction) Print() {
 	fmt.Printf("value %.1f\n", t.value)
 }
 
-func (t *Transaction) MarshallJSON() ([]byte, error) {
+func (t *Transaction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Sender    string  `json:"sender_blockchain_address"`
 		Recipient string  `json:"recipient_blockchain_address"`

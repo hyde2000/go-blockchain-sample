@@ -39,7 +39,7 @@ func (wt *WalletTransaction) GenerateSignature() (*utils.Signature, error) {
 	return &utils.Signature{R: r, S: s}, nil
 }
 
-func (wt *WalletTransaction) MarshallJSON() ([]byte, error) {
+func (wt *WalletTransaction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Sender    string  `json:"sender_blockchain_address"`
 		Recipient string  `json:"recipient_blockchain_address"`

@@ -47,7 +47,7 @@ func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 	case http.MethodPost:
 		w.Header().Add("Content-Type", "application/json")
 		myWallet := models.NewWallet()
-		m, _ := myWallet.MarshallJSON()
+		m, _ := myWallet.MarshalJSON()
 		io.WriteString(w, string(m[:]))
 	default:
 		w.WriteHeader(http.StatusBadRequest)

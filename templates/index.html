@@ -40,15 +40,12 @@
                     contentType: "application/json",
                     data: JSON.stringify(transaction_data),
                     success: function (response) {
-                        if ($.parseJSON(response).message === "fail") {
-                            alert("failed")
-                            return
-                        }
-                        alert("Send sucess");
+                        console.info(response);
+                        alert('Send success');
                     },
                     error: function (response) {
                         console.error(response);
-                        alert("Send failed");
+                        alert('Send failed');
                     }
                 })
             })

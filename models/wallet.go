@@ -78,7 +78,7 @@ func (w *Wallet) BlockchainAddress() string {
 	return w.blockchainAddress
 }
 
-func (w *Wallet) MarshallJSON() ([]byte, error) {
+func (w *Wallet) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		PrivateKey        string `json:"private_key"`
 		PublicKey         string `json:"public_key"`
