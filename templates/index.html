@@ -18,6 +18,7 @@
                     console.error(error);
                 }
             })
+            // Send money
             $('#send_money_button').click(function () {
                 let confirm_text = 'Are you sure to send?';
                 let confirm_result = confirm(confirm_text);
@@ -49,6 +50,30 @@
                     }
                 })
             })
+
+            function reload_amount() {
+                let data = {"blockchain_address": $("#blockchain_address").val()}
+                $.ajax({
+                    url: "/wallet/amount",
+                    type: "GET",
+                    data: data,
+                    success: function (response) {
+                        let amount = response["amount"]
+                        $("#wallet_amount").text(amount);
+                        console.info(amount)
+                    },
+                    error: function (error) {
+                        console.error(error)
+                    }
+                })
+            }
+
+            // Sync amount of wallet
+            $("#reload_wallet").click(function () {
+                reload_amount();
+            })
+
+            setInterval(reload_amount, 3000)
         })
     </script>
 </head>
