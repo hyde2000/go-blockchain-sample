@@ -43,7 +43,7 @@ func NewBlockchain(blockchainAddress string, port uint16) *Blockchain {
 }
 
 func (bc *Blockchain) SetNeighbors() {
-	bc.neighbors = utils.FindNeighbors(utils.GetHost(), bc.port, NeighborIpRangeStart, NeighborIpRangeEnd, BlockchainPortRangeStart, BlockchainPortRangeEnd)
+	bc.neighbors = utils.FindNeighbors("127.0.0.1", bc.port, NeighborIpRangeStart, NeighborIpRangeEnd, BlockchainPortRangeStart, BlockchainPortRangeEnd)
 	log.Printf("%v", bc.neighbors)
 }
 
