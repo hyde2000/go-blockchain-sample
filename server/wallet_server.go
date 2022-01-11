@@ -174,5 +174,5 @@ func (ws *WalletServer) Run() {
 	http.HandleFunc("/wallet", ws.Wallet)
 	http.HandleFunc("/wallet/amount", ws.WalletAmount)
 	http.HandleFunc("/transaction", ws.CreateTransaction)
-	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(ws.Port())), nil))
+	log.Fatal(http.ListenAndServe("127.0.0.1:"+strconv.Itoa(int(ws.Port())), nil))
 }

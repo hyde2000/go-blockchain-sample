@@ -16,6 +16,11 @@ const MiningDifficulty = 3
 const MiningSender = "THE BLOCKCHAIN"
 const MiningReward = 1.0
 const MiningTimerSec = 20
+const BlockchainPortRangeStart = 5000
+const BlockchainPortRangeEnd = 5003
+const NeighborIpRangeStart = 0
+const NeighborIpRangeEnd = 1
+const BlockchainNeighborSyncTimeSec = 20
 
 type Blockchain struct {
 	transactionPool   []*Transaction
@@ -23,6 +28,8 @@ type Blockchain struct {
 	blockchainAddress string
 	port              uint16
 	mux               sync.Mutex
+	neighbors         []string
+	muxNeighbors      sync.Mutex
 }
 
 func NewBlockchain(blockchainAddress string, port uint16) *Blockchain {
@@ -33,6 +40,24 @@ func NewBlockchain(blockchainAddress string, port uint16) *Blockchain {
 	bc.port = port
 
 	return bc
+}
+
+func (bc *Blockchain) SetNeighbors() {
+	bc.neighbors = utils.FindNeighbors(utils.GetHost(), bc.port, NeighborIpRangeStart, NeighborIpRangeEnd, BlockchainPortRangeStart, BlockchainPortRangeEnd)
+	log.Printf("%v", bc.neighbors)
+}
+
+func (bc *Blockchain) SyncNeighbors() {
+	bc.muxNeighbors.Lock()
+	defer bc.muxNeighbors.Unlock()
+
+	bc.SetNeighbors()
+}
+
+func (bc *Blockchain) StartSyncNeighbors() {
+	bc.SyncNeighbors()
+
+	_ = time.AfterFunc(time.Second*BlockchainNeighborSyncTimeSec, bc.StartSyncNeighbors)
 }
 
 func (bc *Blockchain) TransactionPool() []*Transaction {
@@ -167,4 +192,8 @@ func (bc *Blockchain) CalculateTotalAmount(blockchainAddress string) float32 {
 	}
 
 	return totalAmount
+}
+
+func (bc *Blockchain) Run() {
+	bc.StartSyncNeighbors()
 }

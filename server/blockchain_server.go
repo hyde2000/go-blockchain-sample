@@ -152,10 +152,12 @@ func (bcs *BlockchainServer) Amount(w http.ResponseWriter, req *http.Request) {
 }
 
 func (bcs *BlockchainServer) Run() {
+	bcs.GetBlockchain().Run()
+
 	http.HandleFunc("/", bcs.GetChain)
 	http.HandleFunc("/transactions", bcs.Transactions)
 	http.HandleFunc("/mine", bcs.Mine)
 	http.HandleFunc("/mine/start", bcs.StartMine)
 	http.HandleFunc("/amount", bcs.Amount)
-	log.Println(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(bcs.Port())), nil))
+	log.Println(http.ListenAndServe("127.0.0.1:"+strconv.Itoa(int(bcs.Port())), nil))
 }
