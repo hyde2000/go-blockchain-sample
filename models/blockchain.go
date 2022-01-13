@@ -261,6 +261,16 @@ func (bc *Blockchain) Mining() bool {
 	bc.CreateBlock(nonce, previousHash)
 
 	log.Println("action=mining, status=success")
+
+	for _, n := range bc.neighbors {
+		endpoint := fmt.Sprintf("http://%s/consensus", n)
+		client := &http.Client{}
+
+		req, _ := http.NewRequest("PUT", endpoint, nil)
+		resp, _ := client.Do(req)
+		log.Printf("%v", resp)
+	}
+
 	return true
 }
 
@@ -289,4 +299,5 @@ func (bc *Blockchain) CalculateTotalAmount(blockchainAddress string) float32 {
 
 func (bc *Blockchain) Run() {
 	bc.StartSyncNeighbors()
+	bc.ResolveConflicts()
 }
